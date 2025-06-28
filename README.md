@@ -1,7 +1,7 @@
 # RFM analysis - Retail - Python
 
 Please check the coding below or access via the link below:  
-https://colab.research.google.com/drive/1cWVm4ttAOOfBJzVmswV8OovZ3s1xOa8H?usp=sharing    
+🔗 https://colab.research.google.com/drive/1cWVm4ttAOOfBJzVmswV8OovZ3s1xOa8H?usp=sharing 🔗    
 
 Author: Nguyễn Hải Long  
 Date: 2025-05  
@@ -21,7 +21,7 @@ Tools Used: Python
 ### Objective:
 ### 📖 This project is about using Python to analyze given dataset.
 
-✔️ Show up data as demand: number of pageview, visits; calculate the average of money spending by customers in a period of time...
+✔️ 
 
 ### 👤 Who is this project for?  
 
