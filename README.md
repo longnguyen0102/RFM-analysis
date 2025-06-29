@@ -21,121 +21,102 @@ Tools Used: Python
 ### Objective:
 ### 📖 This project is about using Python to analyze given dataset.
 
-✔️ 
+✔️ SuperStore is a global retail company. To celebrate Christmas and New Year, Marketing team wants to deploy marketing campaigns in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
+✔️ Marketing director suggests using RFM model in Python to classify customers, then launch marketing campaigns to appreciate loyalty customers, as well as engaging potential customers.  
 
 ### 👤 Who is this project for?  
 
-✔️ Data analysts & business analysts.  
-✔️ Decision-makers.
+✔️ Data leaders.  
+✔️ Marketing team leaders.  
+✔️ Sales team leaders.  
 
 ---
 
 ## 📂 Dataset Description & Data Structure  
 
 ### 📌 Data Source  
-- Source: 
-- Size: The dataset has 3 tables: payment_report (5 columns, 919 rows), product (3 columns, 492 rows), and transactions (9 columns, 1324002 rows).
-- Format: .csv
+- Source: Company database.  
+- Size: The dataset is 01 excel file with 2 sheets: 'ecommerce retail' & 'Segmentation'.  
+- Format: .xlsx
 
 ### 📊 Data Structure & Relationships  
 #### 1️⃣ Table used: 
-Using all 3 tables of the dataset.  
+Using the whole dataset.  
 
 #### 2️⃣ Table Schema & Data Snapshot:  
-Table 1: payment_report  
+<details>
+ <summary>Table using in this project:</summary>
+  
+| Field Name | Data Type | Description |
+|------------|-----------|-------------|
+| InvoiceNo | object | Invoice number. Nominal, a 6-digit integral number uniquely assigned to each transaction. If this code starts with letter 'C', it indicates a cancellation. |
+| StockCode | object | Product (item) code. Nominal, a 5-digit integral number uniquely assigned to each distinct product. |
+| Description | object | Product (item) name. Nominal. |
+| Quantity | int64 | The quantities of each product (item) per transaction. Numeric. |
+| InvoiceDate | datetime64 | Invoice Date and time. Numeric, the day and time when each transaction was generated. |
+| UnitPrice | float64 | Unit price. Numeric, Product price per unit in sterling. |
+| CustomerID | float64 | Customer number. Nominal, a 5-digit integral number uniquely assigned to each customer. |
+| Country | object | Country name. Nominal, the name of the country where each customer resides. |
 
-| Field Name | Data Type |
-|------------|-----------|
-| report_month | object |
-| payment_group | object |
-| product_id | object |
-| source_id | int64 |
-| volume | int64 |
-
-Table 2: product  
-
-| Field Name | Data Type |
-|------------|-----------|
-| product_id | int64 |
-| category | object |
-| team_own | object |
-
-Table 3: transactions
-
-| Field Name | Data Type |
-|------------|-----------|
-| transaction_id | int64 |
-| merchant_id | int64 |
-| volume | int64 |
-| transType | int64 |
-| transStatus | int64 |
-| sender_id | float64 |
-| receiver_id | float64 |
-| extra_info | object |
-| timeStamp | int64 |
-
+</details>
 ---
 
 ## ⚒️ Main Process
 
 ### 1️⃣ EDA
 #### Import libraries and dataset, copy dataset:
+<details>
+ <summary>Code:</summary>
+  
 ```
 # import libraries
 import pandas as pd
 import numpy as np
 from google.colab import drive
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-# import csv files
-from google.colab import drive
+# import excel files with sheet name 'ecommerce retail'
 drive.mount('/content/drive')
 
-path_payment_report = '/content/drive/MyDrive/DAC K34/Python/Project_2/payment_report.csv'
-path_product = '/content/drive/MyDrive/DAC K34/Python/Project_2/product.csv'
-path_transactions = '/content/drive/MyDrive/DAC K34/Python/Project_2/transactions.csv'
+path = '/content/drive/MyDrive/DAC K34/Python/Project_3/ecommerce retail.xlsx'
+ecommerce_retail = pd.read_excel (path, sheet_name ='ecommerce retail')
 
-payment_report = pd.read_csv(path_payment_report)
-product = pd.read_csv(path_product)
-transactions = pd.read_csv(path_transactions)
-
-# copy dataset
-df_payment_report = payment_report
-df_product = product
-df_transactions = transactions
+#copy dataframe
+df = ecommerce_retail.copy()
 ```
+</details>  
 
-#### Dataframe df_payment_report:  
-Understand about data type / data value
+#### Understanding data    
+<details>
+ <summary>Basic data exploration:</summary>
+
 ```
-df_payment_report.head()
+df.head()
 
 # show rows and columns count
-print(f'Rows count: {df_payment_report.shape[0]}\nColums count: {df_payment_report.shape[1]}')
+print(f'Rows count: {df.shape[0]}\nColums count: {df.shape[1]}')
 
 # show data type
-df_payment_report.info()
+df.info()
 
 # further checking on columns
-df_payment_report.shape
-df_payment_report.describe()
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_df_payment_report_eda_1.png)  
+df.shape
+df.describe()
 
-Checking unique & missing values
-```
 # check null values
-df_payment_report.isnull().sum()
+df.isnull().sum()
 
 # check unique values
 ## print the percentage of unique
-num_unique = df_payment_report.nunique().sort_values()
+num_unique = df.nunique().sort_values()
+print('')
 print('---Percentage of unique values (%)---')
 print(100/num_unique)
 
 # check missing data
-missing_value = df_payment_report.isnull().sum().sort_values(ascending = False)
-missing_percent = df_payment_report.isnull().mean().sort_values(ascending = False)
+missing_value = df.isnull().sum().sort_values(ascending = False)
+missing_percent = df.isnull().mean().sort_values(ascending = False)
 print('')
 print('---Number of missing values in each column---')
 print(missing_value)
@@ -149,243 +130,83 @@ else:
 # check for duplicates
 ## show number of duplicated rows
 print('')
-print(f'Number of entirely duplicated rows: {df_payment_report.duplicated().sum()}')
+print(f'Number of entirely duplicated rows: {df.duplicated().sum()}')
 ## show all duplicated rows
-df_payment_report[df_payment_report.duplicated()]
+df[df.duplicated()]
 ```
+
+ </details>
 Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_df_payment_report_eda_2.png)  
 
-Handle missing values: There are no missing values.  
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_1.png)  
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_2.png)
 
-Handle duplicated values: There are no duplicated values.  
-
-#### Dataframe df_product:  
-Understand about data type / data value  
-```
-df_product.head()
-
-# show rows and columns count
-print(f'Rows count: {df_product.shape[0]}\nColums count: {df_product.shape[1]}')
-
-# show data type
-df_product.info()
-
-# further checking on columns
-df_product.shape
-df_product.describe()
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_df_product_eda_1.png)
-
-Checking unique & missing values
-```
-# check null values
-df_product.isnull().sum()
-
-# check unique values
-## print the percentage of unique
-num_unique = df_product.nunique().sort_values()
-print('---Percentage of unique values (%)---')
-print(100/num_unique)
-
-# check missing data
-missing_value = df_product.isnull().sum().sort_values(ascending = False)
-missing_percent = df_product.isnull().mean().sort_values(ascending = False)
-print('')
-print('---Number of missing values in each column---')
-print(missing_value)
-print('')
-print('---Percentage of missing values (%)---')
-if missing_percent.sum():
-  print(missing_percent[missing_percent > 0] * 100)
-else:
-  print('None')
-
-# check for duplicates
-## show number of duplicated rows
-print('')
-print(f'Number of entirely duplicated rows: {df_product.duplicated().sum()}')
-## show all duplicated rows
-df_product[df_product.duplicated()]
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_df_product_eda_2.png)  
-
-Handle missing values: There are no missing values.  
-
-Handle duplicated values: There are no duplicated values.  
-
-#### Dataframe df_transactions
-Understand about data type / data value 
-```
-df_transactions.head()
-
-# show rows and columns count
-print(f'Rows count: {df_transactions.shape[0]}\nColums count: {df_transactions.shape[1]}')
-
-# show data type
-df_transactions.info()
-
-# further checking on columns
-df_transactions.shape
-df_transactions.describe()
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_df_transactions_eda_1.png)  
-
-Checking unique & missing values  
-```
-# check null values
-df_transactions.isnull().sum()
-
-# check unique values
-## print the percentage of unique
-num_unique = df_transactions.nunique().sort_values()
-print('---Percentage of unique values (%)---')
-print(100/num_unique)
-
-# check missing data
-missing_value = df_transactions.isnull().sum().sort_values(ascending = False)
-missing_percent = df_transactions.isnull().mean().sort_values(ascending = False)
-print('')
-print('---Number of missing values in each column---')
-print(missing_value)
-print('')
-print('---Percentage of missing values (%)---')
-if missing_percent.sum():
-  print(missing_percent[missing_percent > 0] * 100)
-else:
-  print('None')
-
-# check for duplicates
-## show number of duplicated rows
-print('')
-print(f'Number of entirely duplicated rows: {df_transactions.duplicated().sum()}')
-## show all duplicated rows
-df_transactions[df_transactions.duplicated()]
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_df_transactions_eda_2.png)
-
-Handle incorrect data type: 
- - timeStamp -> change to datetime data type.
- - sender_id -> change to int64 data type.
- - receiver_id -> change to int64 data type.
-
-Handle missing data:  
-- sender_id -> need to validate data with data provider/ fill up data according to extra_info (if available).
-- receiver_id -> need to validate data with data provider/ fill up data according to extra_info (if available).  
-- extra_info -> need to validate data with data provider/ fill up data according to sender_id (if available).  
-
-Handle duplicated values: As can see from the table above, there are 28 rows with duplicated data. They are from "extra_info" column and they are missing values. In this case, we will use method from "Handle missing values" part and no need to drop these rows.     
-
-#### Create df payment_enriched (merge payment_report.csv with product.csv)
-```
-payment_enriched = df_payment_report.merge(df_product, on='product_id', how='left')
-payment_enriched.info()
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_create_df_payment_enriched.png)  
-
-### 2️⃣ Data wrangling
-
-#### 1/ Top 3 product_ids with the highest volume.  
-```
-df_top_3 = df_payment_report.groupby('product_id')['volume'].sum().reset_index()
-
-df_top_3 = df_top_3.sort_values(by=['volume'], ascending=False)
-
-df_top_3.head(3)
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_1_result.png)  
-
-#### 2/ Given that 1 product_id is only owed by 1 team, are there any abnormal products against this rule?  
-```
-df_1_product_1_team = payment_enriched.groupby('product_id')['team_own'].nunique().reset_index()
-
-df_1_product_1_team[df_1_product_1_team['team_own'] != 1]
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_2_result.png)  
-
-#### 3/ Find the team has had the lowest performance (lowest volume) since Q2.2023. Find the category that contributes the least to that team.  
-```
-df_low = payment_enriched[payment_enriched['report_month'] >= '2023-04']
-
-df_low
-```
-Result: 
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_3_result.png)  
-
-#### 4/ Find the contribution of source_ids of refund transactions (payment_group = ‘refund’), what is the source_id with the highest contribution?  
-```
-payment_report_refund = df_payment_report[payment_report.payment_group == 'refund']
-payment_report_refund = payment_report_refund[['source_id','volume']].groupby(by=['source_id']).sum().reset_index().sort_values('volume', ascending=False)
-
-payment_report_refund.head()
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_4_result.png)
-
-#### 5/ Define type of transactions (‘transaction_type’) for each row, given:  
-#### - transType = 2 & merchant_id = 1205: Bank Transfer Transaction  
-#### - transType = 2 & merchant_id = 2260: Withdraw Money Transaction  
-#### - transType = 2 & merchant_id = 2270: Top Up Money Transaction  
-#### - transType = 2 & others merchant_id: Payment Transaction  
-#### - transType = 8, merchant_id = 2250: Transfer Money Transaction  
-#### - transType = 8 & others merchant_id: Split Bill Transaction  
-#### - Remained cases are invalid transactions  
-```
-def trans_type(row):
-  # condition Bank Transfer tra cứu với transType và merchant_id
-  ## run each row of transType và merchant_id
-  transType = row['transType']
-  merchant_id = row['merchant_id']
-
-  # split into 3 cases: transType = 2, transType = 8 and else.
-  if transType == 2:
-    if merchant_id == 1205:
-      return 'Bank Transfer Transaction'
-    elif merchant_id == 2260:
-      return 'Withdraw Money Transaction'
-    elif merchant_id == 2270:
-      return 'Top Up Money Transaction'
-    else:
-      return 'Payment Transaction'
-  elif transType == 8:
-    if merchant_id == 2250:
-      return 'Transfer Money Transaction'
-    else:
-      return 'Split Bill Transacion'
-  else:
-    return 'Invalid Transaction'
-
-# apply trans_type
-df_transactions['transaction_type']=df_transactions.apply(trans_type, axis=1)
-df_transactions.head()
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_5_result.png)
-
-#### 6/ Of each transaction type (excluding invalid transactions): find the number of transactions, volume, senders and receivers.
-```
-valid_transactions = df_transactions[df_transactions['transaction_type'] != 'Invalid Transaction']
-
-valid_transactions
-```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_6_result_1.png)  
+<details>
+ <summary>Change data typpe of 'InvoiceNo' to string:</summary>
 
 ```
-valid_transactions.groupby(by = 'transaction_type').agg(total_transactions=('transaction_id', 'nunique'),
-                                                        total_volume=('volume', 'sum'),
-                                                        sender_count=('sender_id', 'nunique'),
-                                                        receiver_count=('receiver_id', 'nunique'))
+# change data type of Invoice No to string
+df['InvoiceNo'] = df['InvoiceNo'].astype(str)
 ```
-Result:  
-![](https://github.com/longnguyen0102/photo/blob/main/data_wrangling-fintech-python/python_data_wrangling_query_6_result_2.png)
+
+</details>
+
+<details>
+ <summary>Explore negative values of Quantity columns (Quantity < 0):</summary>
+  
+```
+# print out some rows where Quantity < 0
+print('Some rows have Quantity < 0')
+print(df[df['Quantity']<0].head())
+
+
+# further checking
+## make a new column: True if InvoiceNo has 'C', False if InvoiceNo has no 'C'
+df['Cancellation'] = df['InvoiceNo'].str.contains('C')
+
+## check InvoiceNo has 'C' and Quantity < 0
+print(df[(df['Cancellation'] == True) & (df['Quantity'] < 0)].head())
+print('asoidfbao',df['CustomerID'].isna().sum())
+
+## check InvoiceNo has no 'C' and Quantity < 0
+print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
+```
+
+</details>
+Result:
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_3.png)
+
+<details>
+ <summary>Explore negative values of Quantity columns (UnitPrice < 0):</summary>
+  
+```
+# print out some rows where Quantity < 0
+print('Some rows have UnitPrice < 0')
+print(df[df['UnitPrice'] < 0].head())
+```
+
+</details>
+Result:
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_4.png)
+
+<details>
+ <summary>Seperate 'InvoiceData' to 'Day' and 'Month' columns:</summary>
+  
+```
+# seperate InvoiceDate to Day and Month columns
+df['Day'] = pd.to_datetime(df.InvoiceDate).dt.date
+df['Month'] = df['Day'].apply(lambda x: str(x)[:-3])
+df.head()
+```
+
+</details>
+Result:
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_5.png)
+
+
 
 ## 📌 Key Takeaways:  
 ✔️ Understanding the basics of SQL query.  
