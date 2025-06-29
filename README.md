@@ -64,6 +64,7 @@ Using the whole dataset.
 ## ⚒️ Main Process
 
 ### 1️⃣ EDA
+*Note: Click the arrow to see codes*  
 #### Import libraries and dataset, copy dataset:
 <details>
  <summary>Code:</summary>
@@ -136,7 +137,6 @@ df[df.duplicated()]
 ```
 
  </details>
-Result:  
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_1.png)  
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_2.png)
@@ -173,7 +173,6 @@ print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
 ```
 
 </details>
-Result:
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_3.png)
 
@@ -187,7 +186,6 @@ print(df[df['UnitPrice'] < 0].head())
 ```
 
 </details>
-Result:
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_4.png)
 
@@ -202,11 +200,104 @@ df.head()
 ```
 
 </details>
-Result:
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_5.png)
 
+#### Handle negative, missing values, duplicates:  
 
+<details>
+ <summary>Negative values:</summary>
+  
+```
+# change data type
+df['StockCode'] = df['StockCode'].astype(str)
+df['Description'] = df['Description'].astype(str)
+df['CustomerID'] = df['CustomerID'].astype(str)
+df['Country'] = df['Country'].astype(str)
+
+# drop negative values in Quantity and UnitPrice column
+df = df[df['Quantity'] > 0]
+df = df[df['UnitPrice'] > 0]
+
+# drop InvoiceNo with C
+df = df[df['Cancellation'] == False]
+
+# replace NaN
+df = df.replace('nan', None)
+df = df.replace('Nan', None)
+
+df.info()
+```
+
+</details>
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_6.png)
+
+<details>
+ <summary>Missing values:</summary>
+  
+```
+# show up some rows with missing values
+print('---Some rows with missing values---')
+df_null = df.isnull()
+rows_with_null = df_null.any(axis=1)
+df_with_null = df[rows_with_null]
+print(df_with_null.head(10))
+```
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_7.png)
+
+```
+# drop rows with CustomerID == None
+df_no_na = df.drop(df[df['CustomerID'].isnull()].index)
+df_no_na
+```
+</details>
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_8.png)
+
+<details>
+ <summary>Duplicated values:</summary>
+  
+```
+# locate the values are not duplicated in the selected columns
+df_no_dup = df_no_na.loc[~df.duplicated(subset = ['InvoiceNo','StockCode','InvoiceDate','UnitPrice','CustomerID','Country'])].reset_index(drop=True).copy()
+
+# check an example of duplicate in InvoiceNo
+df_no_dup.query('InvoiceNo == "536365"')
+
+df_no_dup.query('InvoiceNo == "581587"')
+```
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_9.png)
+
+```
+# drop duplicates, keep the first row of subset
+df_main = df.drop_duplicates(subset=["InvoiceNo", "StockCode","InvoiceDate","CustomerID"], keep = 'first')
+
+df_main.head()
+```
+
+</details>
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_10.png)
+
+<details>
+ <summary>Create 'Sales' column (Quantity * Price):</summary>
+  
+```
+# create Sales column (Quantity * UnitPrice)
+df_main['Sales'] = df_main.Quantity * df.UnitPrice
+
+# take max('Day') for recently interaction of customer
+last_day = df_main.Day.max()
+
+last_day
+df_main
+```
+
+</details>
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_11.png)
 
 ## 📌 Key Takeaways:  
 ✔️ Understanding the basics of SQL query.  
