@@ -1,4 +1,4 @@
-# RFM analysis - Retail - Python
+# Retailing – a RFM analysis using Python
 
 Please check the coding below or access via the link below:  
 🔗 https://colab.research.google.com/drive/1cWVm4ttAOOfBJzVmswV8OovZ3s1xOa8H?usp=sharing 🔗    
