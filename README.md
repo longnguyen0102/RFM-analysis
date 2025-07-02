@@ -91,74 +91,76 @@ Sheet 'Segmentation'
 ### 1️⃣ EDA
 
 #### Import libraries and dataset, copy dataset:
+
 <details>
  <summary>Code:</summary>
   
-```
-# import libraries
-import pandas as pd
-import numpy as np
-from google.colab import drive
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-# import excel files with sheet name 'ecommerce retail'
-drive.mount('/content/drive')
-
-path = '/content/drive/MyDrive/DAC K34/Python/Project_3/ecommerce retail.xlsx'
-ecommerce_retail = pd.read_excel (path, sheet_name ='ecommerce retail')
-
-#copy dataframe
-df = ecommerce_retail.copy()
-```
+ ```
+ # import libraries
+ import pandas as pd
+ import numpy as np
+ from google.colab import drive
+ import matplotlib.pyplot as plt
+ import seaborn as sns
+ 
+ # import excel files with sheet name 'ecommerce retail'
+ drive.mount('/content/drive')
+ 
+ path = '/content/drive/MyDrive/DAC K34/Python/Project_3/ecommerce retail.xlsx'
+ ecommerce_retail = pd.read_excel (path, sheet_name ='ecommerce retail')
+ 
+ #copy dataframe
+ df = ecommerce_retail.copy()
+ ```
 </details>  
 
 #### Understanding data    
+
 <details>
  <summary>Basic data exploration:</summary>
 
-```
-df.head()
-
-# show rows and columns count
-print(f'Rows count: {df.shape[0]}\nColums count: {df.shape[1]}')
-
-# show data type
-df.info()
-
-# further checking on columns
-df.shape
-df.describe()
-
-# check null values
-df.isnull().sum()
-
-# check unique values
-## print the percentage of unique
-num_unique = df.nunique().sort_values()
-print('')
-print('---Percentage of unique values (%)---')
-print(100/num_unique)
-
-# check missing data
-missing_value = df.isnull().sum().sort_values(ascending = False)
-missing_percent = df.isnull().mean().sort_values(ascending = False)
-print('')
-print('---Number of missing values in each column---')
-print(missing_value)
-print('')
-print('---Percentage of missing values (%)---')
-if missing_percent.sum():
-  print(missing_percent[missing_percent > 0] * 100)
-else:
-  print('None')
-
-# check for duplicates
-## show number of duplicated rows
-print('')
-print(f'Number of entirely duplicated rows: {df.duplicated().sum()}')
-## show all duplicated rows
-df[df.duplicated()]
+ ```
+ df.head()
+ 
+ # show rows and columns count
+ print(f'Rows count: {df.shape[0]}\nColums count: {df.shape[1]}')
+ 
+ # show data type
+ df.info()
+ 
+ # further checking on columns
+ df.shape
+ df.describe()
+ 
+ # check null values
+ df.isnull().sum()
+ 
+ # check unique values
+ ## print the percentage of unique
+ num_unique = df.nunique().sort_values()
+ print('')
+ print('---Percentage of unique values (%)---')
+ print(100/num_unique)
+ 
+ # check missing data
+ missing_value = df.isnull().sum().sort_values(ascending = False)
+ missing_percent = df.isnull().mean().sort_values(ascending = False)
+ print('')
+ print('---Number of missing values in each column---')
+ print(missing_value)
+ print('')
+ print('---Percentage of missing values (%)---')
+ if missing_percent.sum():
+   print(missing_percent[missing_percent > 0] * 100)
+ else:
+   print('None')
+ 
+ # check for duplicates
+ ## show number of duplicated rows
+ print('')
+ print(f'Number of entirely duplicated rows: {df.duplicated().sum()}')
+ ## show all duplicated rows
+ df[df.duplicated()]
 ```
 
  </details>
@@ -169,33 +171,33 @@ df[df.duplicated()]
 <details>
  <summary>Change data typpe of 'InvoiceNo' to string:</summary>
 
-```
-# change data type of Invoice No to string
-df['InvoiceNo'] = df['InvoiceNo'].astype(str)
-```
+ ```
+ # change data type of Invoice No to string
+ df['InvoiceNo'] = df['InvoiceNo'].astype(str)
+ ```
 
 </details>
 
 <details>
  <summary>Explore negative values of Quantity columns (Quantity < 0):</summary>
   
-```
-# print out some rows where Quantity < 0
-print('Some rows have Quantity < 0')
-print(df[df['Quantity']<0].head())
-
-
-# further checking
-## make a new column: True if InvoiceNo has 'C', False if InvoiceNo has no 'C'
-df['Cancellation'] = df['InvoiceNo'].str.contains('C')
-
-## check InvoiceNo has 'C' and Quantity < 0
-print(df[(df['Cancellation'] == True) & (df['Quantity'] < 0)].head())
-print('asoidfbao',df['CustomerID'].isna().sum())
-
-## check InvoiceNo has no 'C' and Quantity < 0
-print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
-```
+ ```
+ # print out some rows where Quantity < 0
+ print('Some rows have Quantity < 0')
+ print(df[df['Quantity']<0].head())
+ 
+ 
+ # further checking
+ ## make a new column: True if InvoiceNo has 'C', False if InvoiceNo has no 'C'
+ df['Cancellation'] = df['InvoiceNo'].str.contains('C')
+ 
+ ## check InvoiceNo has 'C' and Quantity < 0
+ print(df[(df['Cancellation'] == True) & (df['Quantity'] < 0)].head())
+ print('asoidfbao',df['CustomerID'].isna().sum())
+ 
+ ## check InvoiceNo has no 'C' and Quantity < 0
+ print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
+ ```
 
 </details>
 
@@ -204,11 +206,11 @@ print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
 <details>
  <summary>Explore negative values of Quantity columns (UnitPrice < 0):</summary>
   
-```
-# print out some rows where Quantity < 0
-print('Some rows have UnitPrice < 0')
-print(df[df['UnitPrice'] < 0].head())
-```
+ ```
+ # print out some rows where Quantity < 0
+ print('Some rows have UnitPrice < 0')
+ print(df[df['UnitPrice'] < 0].head())
+ ```
 
 </details>
 
@@ -217,12 +219,12 @@ print(df[df['UnitPrice'] < 0].head())
 <details>
  <summary>Seperate 'InvoiceData' to 'Day' and 'Month' columns:</summary>
   
-```
-# seperate InvoiceDate to Day and Month columns
-df['Day'] = pd.to_datetime(df.InvoiceDate).dt.date
-df['Month'] = df['Day'].apply(lambda x: str(x)[:-3])
-df.head()
-```
+ ```
+ # seperate InvoiceDate to Day and Month columns
+ df['Day'] = pd.to_datetime(df.InvoiceDate).dt.date
+ df['Month'] = df['Day'].apply(lambda x: str(x)[:-3])
+ df.head()
+ ```
 
 </details>
 
@@ -235,25 +237,25 @@ df.head()
 <details>
  <summary>Negative values:</summary>
   
-```
-# change data type
-df['StockCode'] = df['StockCode'].astype(str)
-df['Description'] = df['Description'].astype(str)
-df['CustomerID'] = df['CustomerID'].astype(str)
-df['Country'] = df['Country'].astype(str)
-
-# drop negative values in Quantity and UnitPrice column
-df = df[df['Quantity'] > 0]
-df = df[df['UnitPrice'] > 0]
-
-# drop InvoiceNo with C
-df = df[df['Cancellation'] == False]
-
-# replace NaN
-df = df.replace('nan', None)
-df = df.replace('Nan', None)
-
-df.info()
+ ```
+ # change data type
+ df['StockCode'] = df['StockCode'].astype(str)
+ df['Description'] = df['Description'].astype(str)
+ df['CustomerID'] = df['CustomerID'].astype(str)
+ df['Country'] = df['Country'].astype(str)
+ 
+ # drop negative values in Quantity and UnitPrice column
+ df = df[df['Quantity'] > 0]
+ df = df[df['UnitPrice'] > 0]
+ 
+ # drop InvoiceNo with C
+ df = df[df['Cancellation'] == False]
+ 
+ # replace NaN
+ df = df.replace('nan', None)
+ df = df.replace('Nan', None)
+ 
+ df.info()
 ```
 
 </details>
@@ -265,21 +267,21 @@ df.info()
 <details>
  <summary>Missing values:</summary>
   
-```
-# show up some rows with missing values
-print('---Some rows with missing values---')
-df_null = df.isnull()
-rows_with_null = df_null.any(axis=1)
-df_with_null = df[rows_with_null]
-print(df_with_null.head(10))
-```
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_7.png)
-
-```
-# drop rows with CustomerID == None
-df_no_na = df.drop(df[df['CustomerID'].isnull()].index)
-df_no_na
-```
+ ```
+ # show up some rows with missing values
+ print('---Some rows with missing values---')
+ df_null = df.isnull()
+ rows_with_null = df_null.any(axis=1)
+ df_with_null = df[rows_with_null]
+ print(df_with_null.head(10))
+ ```
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_7.png)
+ 
+ ```
+ # drop rows with CustomerID == None
+ df_no_na = df.drop(df[df['CustomerID'].isnull()].index)
+ df_no_na
+ ```
 </details>
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_8.png)
@@ -289,24 +291,24 @@ df_no_na
 <details>
  <summary>Duplicated values:</summary>
   
-```
-# locate the values are not duplicated in the selected columns
-df_no_dup = df_no_na.loc[~df.duplicated(subset = ['InvoiceNo','StockCode','InvoiceDate','UnitPrice','CustomerID','Country'])].reset_index(drop=True).copy()
-
-# check an example of duplicate in InvoiceNo
-df_no_dup.query('InvoiceNo == "536365"')
-
-df_no_dup.query('InvoiceNo == "581587"')
-```
-
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_9.png)
-
-```
-# drop duplicates, keep the first row of subset
-df_main = df.drop_duplicates(subset=["InvoiceNo", "StockCode","InvoiceDate","CustomerID"], keep = 'first')
-
-df_main.head()
-```
+ ```
+ # locate the values are not duplicated in the selected columns
+ df_no_dup = df_no_na.loc[~df.duplicated(subset = ['InvoiceNo','StockCode','InvoiceDate','UnitPrice','CustomerID','Country'])].reset_index(drop=True).copy()
+ 
+ # check an example of duplicate in InvoiceNo
+ df_no_dup.query('InvoiceNo == "536365"')
+ 
+ df_no_dup.query('InvoiceNo == "581587"')
+ ```
+ 
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_9.png)
+ 
+ ```
+ # drop duplicates, keep the first row of subset
+ df_main = df.drop_duplicates(subset=["InvoiceNo", "StockCode","InvoiceDate","CustomerID"], keep = 'first')
+ 
+ df_main.head()
+ ```
 
 </details>
 
@@ -315,16 +317,16 @@ df_main.head()
 <details>
  <summary>Create 'Sales' column (Quantity * Price):</summary>
   
-```
-# create Sales column (Quantity * UnitPrice)
-df_main['Sales'] = df_main.Quantity * df.UnitPrice
-
-# take max('Day') for recently interaction of customer
-last_day = df_main.Day.max()
-
-last_day
-df_main
-```
+ ```
+ # create Sales column (Quantity * UnitPrice)
+ df_main['Sales'] = df_main.Quantity * df.UnitPrice
+ 
+ # take max('Day') for recently interaction of customer
+ last_day = df_main.Day.max()
+ 
+ last_day
+ df_main
+ ```
 
 </details>
 
@@ -339,19 +341,19 @@ df_main
 <details>
  <summary>Code:</summary>  
 
-```
-# import excel files with sheet name 'Segmentation'
-segmentation = pd.read_excel (path, sheet_name ='Segmentation')
-
-# copy dataframe
-df_seg = segmentation
-
-# transform Segmentation
-df_seg['RFM Score'] = df_seg['RFM Score'].str.split(',')
-df_seg = df_seg.explode('RFM Score').reset_index(drop=True)
-
-df_seg.head()
-```
+ ```
+ # import excel files with sheet name 'Segmentation'
+ segmentation = pd.read_excel (path, sheet_name ='Segmentation')
+ 
+ # copy dataframe
+ df_seg = segmentation
+ 
+ # transform Segmentation
+ df_seg['RFM Score'] = df_seg['RFM Score'].str.split(',')
+ df_seg = df_seg.explode('RFM Score').reset_index(drop=True)
+ 
+ df_seg.head()
+ ```
 
 </details>
 
@@ -364,39 +366,39 @@ df_seg.head()
 <details>
  <summary>Code:</summary>
  
-```
-# determining Recency, Frequency, Monetary
-df_RFM = df_main.groupby('CustomerID').agg(
-    Recency = ('Day', lambda x: last_day - x.max()),
-    Frequency = ('CustomerID','count'),
-    Monetary = ('Sales','sum'),
-    Start_Date = ('Day','min')
-).reset_index()
+ ```
+ # determining Recency, Frequency, Monetary
+ df_RFM = df_main.groupby('CustomerID').agg(
+     Recency = ('Day', lambda x: last_day - x.max()),
+     Frequency = ('CustomerID','count'),
+     Monetary = ('Sales','sum'),
+     Start_Date = ('Day','min')
+ ).reset_index()
+ 
+ df_RFM['Recency'] = df_RFM['Recency'].dt.days.astype('int16')
+ # take opposite of Recency
+ df_RFM['Reverse_Recency'] = -df_RFM['Recency']
+ df_RFM['Start_Date'] = pd.to_datetime(df_RFM.Start_Date)
+ 
+ # label R, F, M
+ df_RFM['R'] = pd.qcut(df_RFM['Reverse_Recency'], 5, labels = range(1,6)).astype(str)
+ df_RFM['F'] = pd.qcut(df_RFM['Frequency'], 5, labels = range(1,6)).astype(str)
+ df_RFM['M'] = pd.qcut(df_RFM['Monetary'], 5, labels = range(1,6)).astype(str)
+ df_RFM['RFM'] = df_RFM.R + df_RFM.F + df_RFM.M
+ 
+ df_RFM.head()
+ ```
+ ![data_processing_2](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_2.png)
 
-df_RFM['Recency'] = df_RFM['Recency'].dt.days.astype('int16')
-# take opposite of Recency
-df_RFM['Reverse_Recency'] = -df_RFM['Recency']
-df_RFM['Start_Date'] = pd.to_datetime(df_RFM.Start_Date)
-
-# label R, F, M
-df_RFM['R'] = pd.qcut(df_RFM['Reverse_Recency'], 5, labels = range(1,6)).astype(str)
-df_RFM['F'] = pd.qcut(df_RFM['Frequency'], 5, labels = range(1,6)).astype(str)
-df_RFM['M'] = pd.qcut(df_RFM['Monetary'], 5, labels = range(1,6)).astype(str)
-df_RFM['RFM'] = df_RFM.R + df_RFM.F + df_RFM.M
-
-df_RFM.head()
-```
-![data_processing_2](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_2.png)
-
-```
-# clear space
-df_seg['RFM Score'] = df_seg['RFM Score'].str.strip()
-
-# merge with Segementation for comparison
-df_RFM_final = df_RFM.merge(df_seg, how='left', left_on='RFM', right_on='RFM Score')
-
-df_RFM_final.head()
-```
+ ```
+ # clear space
+ df_seg['RFM Score'] = df_seg['RFM Score'].str.strip()
+ 
+ # merge with Segementation for comparison
+ df_RFM_final = df_RFM.merge(df_seg, how='left', left_on='RFM', right_on='RFM Score')
+ 
+ df_RFM_final.head()
+ ```
 
 </details>
 
@@ -409,6 +411,63 @@ df_RFM_final.head()
 Afterward, the results of the three metrics are assigned scores on a scale from 1 to 5.
 In the final step, the combined RFM scores are matched against the Segmentation table to assign each customer to a corresponding segment.  
 
+#### Determine Loyal and Non Loyal and showing characteristic of Potential Loyalist  
+
+<details>
+ <summary>Loyal status:</summary>
+
+ ```
+ df_RFM_final['Loyal_Status'] = df_RFM_final['Segment'].apply(lambda x: 'Loyal' if x in ('Loyal','Potential Loyalist') else 'Non Loyal')
+
+ df_RFM_final.head()
+ ```
+</details>
+
+![data_processing_4]()
+
+<details>
+ <summary>Creating df_RFM_final for visualization:</summary>
+ 
+ ```
+ # Average of Quantity and Sales according to CustomerID
+ df_potential_average = df_main.groupby('CustomerID').agg(
+     Quantity_Average = ('Quantity','mean'),
+     Sales_Average = ('Sales','mean')
+ ).reset_index()
+ 
+ df_potential_average.head()
+ ```
+
+![data_processing_5]()
+
+ ```
+ # First Sales and Quantity according to CustomerID
+ ## base on InvoiceDate to get first order -> Quantity, Sales
+ df_main['Ranking'] = df_main.groupby('CustomerID')['InvoiceDate'].rank(method = 'first')
+ df_potential_first = df_main[df_main.Ranking == 1][['CustomerID','Quantity','Sales']]
+ df_potential_first = df_potential_first.rename(columns={'Quantity':'First_Quantity','Sales':'First_Sales'})
+ 
+ df_potential_first.head()
+ ```
+ 
+ ![data_processing_6]()
+
+ ```
+ # merge all
+ df_RFM_final = df_RFM_final.merge(df_potential_average, how = 'left', on = 'CustomerID')
+ df_RFM_final = df_RFM_final.merge(df_potential_first, how = 'left', on = 'CustomerID')
+ 
+ df_RFM_final.head()
+ ```
+</details>
+
+|  | CustomerID | Recency | Frequency | Monetary | Start_Date | Reverse_Recency | R | F | M | RFM | Segment | RFM Score | Loyal_Status | Quantity_Average | Sales_Average | First_Quantity | First_Sales |
+|---|-----------|---------|-----------|----------|------------|-----------------|---|---|---|-----|---------|-----------|--------------|------------------|---------------|----------------|--------|
+| 0 | 12346.0 | 325 | 1 | 77183.60 | 2011-01-18 | -325 | 1 | 1 | 5 | 115 | Cannot Lose Them | 115 | Non Loyal | 74125.000000 | 77183.000000 | 74215 | 77183.6 |
+| 1 | 12347.0 | 2 | 182 | 4310.00 | 2010-12-07 | -2 | 5 | 5 | 5 | 555 | Champions | 555 | Non Loyal | 13.505495 | 23.681319 | 12 | 25.2 |
+| 2 | 12348.0 | 75 | 27 | 1595.64 | 2010-12-16 | -75 | 2 | 2 | 4 | 224 | At Risk | 224 | Non Loyal | 68.925926 | 59.097778 | 72 | 39.6 |
+| 3 | 12349.0 | 18 | 73 | 1757.55 | 2011-11-21 | -18 | 4 | 4 | 4 | 444 | Loyal | 444 | Loyal | 8.643836 | 24.076027 | 2 | 15.0 |
+| 4 | 12350.0 | 310 | 17 | 334.40 | 2011-02-02 | -310 | 1 | 2 | 2 | 122 | Hibernating customers | 122 | Non Loyal | 11.588235 | 19.670588 | 12 | 25.2 |
 
 ## 📌 Key Takeaways:  
 ✔️ 
