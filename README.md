@@ -423,7 +423,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
  ```
 </details>
 
-![data_processing_4]()
+![data_processing_4](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_4.png)
 
 <details>
  <summary>Creating df_RFM_final for visualization:</summary>
@@ -438,7 +438,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
  df_potential_average.head()
  ```
 
-![data_processing_5]()
+![data_processing_5](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_5.png)
 
  ```
  # First Sales and Quantity according to CustomerID
@@ -450,7 +450,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
  df_potential_first.head()
  ```
  
- ![data_processing_6]()
+ ![data_processing_6](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_6.png)
 
  ```
  # merge all
@@ -469,5 +469,38 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 | 3 | 12349.0 | 18 | 73 | 1757.55 | 2011-11-21 | -18 | 4 | 4 | 4 | 444 | Loyal | 444 | Loyal | 8.643836 | 24.076027 | 2 | 15.0 |
 | 4 | 12350.0 | 310 | 17 | 334.40 | 2011-02-02 | -310 | 1 | 2 | 2 | 122 | Hibernating customers | 122 | Non Loyal | 11.588235 | 19.670588 | 12 | 25.2 |
 
+### 3️⃣ Visualization  
+
+<details>
+ <summary>Visualize final dataset with RFM:</summary>
+
+ ```
+ # Visualize spending amount and number of user according to Segment.
+ user_by_segment = df_RFM_final[['Segment','CustomerID']].groupby(['Segment']).count().reset_index()
+ user_by_segment = user_by_segment.rename(columns = {'CustomerID':'user_volume'})
+ user_by_segment['contribution_percent'] = round(user_by_segment['user_volume'] / user_by_segment['user_volume'].sum() * 100)
+ user_by_segment['type'] = 'user contribution'
+ 
+ spending_by_segment = df_RFM_final[['Segment','Monetary']].groupby(['Segment']).sum().reset_index()
+ spending_by_segment = spending_by_segment.rename(columns = {'Monetary':'spending'})
+ spending_by_segment['contribution_percent'] = spending_by_segment['spending'] / spending_by_segment['spending'].sum() * 100
+ spending_by_segment['type'] = 'spending contribution'
+ 
+ segment_agg = pd.concat([user_by_segment, spending_by_segment])
+ 
+ plt.figure(figsize=(20, 10))
+ sns.barplot(segment_agg, x='Segment', y='contribution_percent', hue='type')
+ plt.title='Spending amount and number of user according to Segment'
+ 
+ plt.show()
+ ```
+</details>
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_visualization.png)
+
 ## 📌 Key Takeaways:  
-✔️ 
+✔️ As showing in the plot, **Champions** customers spend the most and they contribute almost 20%. However, we should mind about **At Risk** customers and **Hibernating** customers as they have 10-20%  
+➡️ Action: We should deploy some program to encourage them and notify them about new programs.  
+
+✔️ **Potential Loyalist** customers and **Loyal** customers have user contribution at the same but the money spending of **Potential Loyalist** is low (less than 10%). **Promising** customers are low on user contribution and the money spending is the same as **Potential**  
+➡️ Action: Deploy encouraging programs.
