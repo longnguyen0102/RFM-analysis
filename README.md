@@ -84,10 +84,12 @@ Sheet 'Segmentation'
 
 ---
 
-## ⚒️ Main Process
+## ⚒️ Main Process  
+
+*Note: Click the white triangle to see codes*  
 
 ### 1️⃣ EDA
-*Note: Click the arrow to see codes*  
+
 #### Import libraries and dataset, copy dataset:
 <details>
  <summary>Code:</summary>
