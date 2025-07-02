@@ -23,6 +23,7 @@ Tools Used: Python
 
 ✔️ SuperStore is a global retail company. To celebrate Christmas and New Year, Marketing team wants to deploy marketing campaigns in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
 ✔️ Marketing director suggests using RFM model in Python to classify customers, then launch marketing campaigns to appreciate loyalty customers, as well as engaging potential customers.  
+✔️ RFM analysis (Regency - Frequency - Monetary) is a marketing technique used to quantitatively rank and group customers based on the recency, frequency and monetary total of their recent transactions to identify the best customers and perform targeted marketing campaigns.  
 
 ### 👤 Who is this project for?  
 
@@ -225,6 +226,8 @@ df.head()
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_5.png)
 
+➡️ The 'InvoiceDate' column is split into 'Day' and 'Month' to later identify the customer's most recent interaction date, which is essential for calculating the Recency metric.  
+
 #### Handle negative, missing values, duplicates:  
 
 <details>
@@ -255,6 +258,8 @@ df.info()
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_6.png)
 
+➡️ Remove all negative values in 'Quantity', 'UnitPrice' and 'InvoiceNo' with 'C' because they are cancelled orders.  
+
 <details>
  <summary>Missing values:</summary>
   
@@ -276,6 +281,8 @@ df_no_na
 </details>
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_8.png)
+
+➡️ Drop all rows with 'CustomerID' is null. The reason for this action is cannot identify the customers.  
 
 <details>
  <summary>Duplicated values:</summary>
@@ -321,7 +328,36 @@ df_main
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_11.png)
 
+➡️ Taking max of 'Day' in order to identify the most recent date of interaction of customers.  
+
+### 2️⃣ Data processing  
+
+#### Handle Segmentation table  
+
+<details>
+ <summary>Code:</summary>  
+
+```
+# import excel files with sheet name 'Segmentation'
+segmentation = pd.read_excel (path, sheet_name ='Segmentation')
+
+# copy dataframe
+df_seg = segmentation
+
+# transform Segmentation
+df_seg['RFM Score'] = df_seg['RFM Score'].str.split(',')
+df_seg = df_seg.explode('RFM Score').reset_index(drop=True)
+
+df_seg.head()
+```
+
+</details>
+
+![data_processing_1]()  
+
+➡️ The Segmentation copy process involves duplicating a new Segmentation table to avoid interference with the original dataset, thereby preventing unintended data modifications. The transformation of the Segmentation table will split segments based on predefined RFM scores. These scores are currently separated by commas, so this process will parse them into the required segments accordingly.  
+
+
+
 ## 📌 Key Takeaways:  
-✔️ Understanding the basics of SQL query.  
-✔️ Know how to apply Window Functions when writing queries.  
-✔️ Understanding real-world requirements when using SQl to retrieve neceesary data
+✔️ 
