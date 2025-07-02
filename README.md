@@ -23,7 +23,7 @@ Tools Used: Python
 
 ✔️ SuperStore is a global retail company. To celebrate Christmas and New Year, Marketing team wants to deploy marketing campaigns in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
 ✔️ Marketing director suggests using RFM model in Python to classify customers, then launch marketing campaigns to appreciate loyalty customers, as well as engaging potential customers.  
-✔️ RFM analysis (Regency - Frequency - Monetary) is a marketing technique used to quantitatively rank and group customers based on the recency, frequency and monetary total of their recent transactions to identify the best customers and perform targeted marketing campaigns.  
+✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used to quantitatively rank and group customers based on the recency, frequency and monetary total of their recent transactions to identify the best customers and perform targeted marketing campaigns.  
 
 ### 👤 Who is this project for?  
 
@@ -353,10 +353,59 @@ df_seg.head()
 
 </details>
 
-![data_processing_1]()  
+![data_processing_1](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_1.png)  
 
 ➡️ The Segmentation copy process involves duplicating a new Segmentation table to avoid interference with the original dataset, thereby preventing unintended data modifications. The transformation of the Segmentation table will split segments based on predefined RFM scores. These scores are currently separated by commas, so this process will parse them into the required segments accordingly.  
 
+#### Calculating RFM
+
+<details>
+ <summary>Code:</summary>
+ 
+```
+# determining Recency, Frequency, Monetary
+df_RFM = df_main.groupby('CustomerID').agg(
+    Recency = ('Day', lambda x: last_day - x.max()),
+    Frequency = ('CustomerID','count'),
+    Monetary = ('Sales','sum'),
+    Start_Date = ('Day','min')
+).reset_index()
+
+df_RFM['Recency'] = df_RFM['Recency'].dt.days.astype('int16')
+# take opposite of Recency
+df_RFM['Reverse_Recency'] = -df_RFM['Recency']
+df_RFM['Start_Date'] = pd.to_datetime(df_RFM.Start_Date)
+
+# label R, F, M
+df_RFM['R'] = pd.qcut(df_RFM['Reverse_Recency'], 5, labels = range(1,6)).astype(str)
+df_RFM['F'] = pd.qcut(df_RFM['Frequency'], 5, labels = range(1,6)).astype(str)
+df_RFM['M'] = pd.qcut(df_RFM['Monetary'], 5, labels = range(1,6)).astype(str)
+df_RFM['RFM'] = df_RFM.R + df_RFM.F + df_RFM.M
+
+df_RFM.head()
+```
+![data_processing_2](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_2.png)
+
+```
+# clear space
+df_seg['RFM Score'] = df_seg['RFM Score'].str.strip()
+
+# merge with Segementation for comparison
+df_RFM_final = df_RFM.merge(df_seg, how='left', left_on='RFM', right_on='RFM Score')
+
+df_RFM_final.head()
+```
+
+</details>
+
+![data_processing_3](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_3.png)
+
+➡️ In this stage, RFM is calculated:  
+- Recency is computed as the last purchase date minus the dataset’s maximum date, which returns a negative value representing the number of days since the most recent transaction.  
+- Frequency measures how often a customer makes a purchase and is computed as counting the number of appearance of each customer.  
+- Monetary represents the total of money spending from each customer.
+Afterward, the results of the three metrics are assigned scores on a scale from 1 to 5.
+In the final step, the combined RFM scores are matched against the Segmentation table to assign each customer to a corresponding segment.  
 
 
 ## 📌 Key Takeaways:  
