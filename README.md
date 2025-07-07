@@ -1,4 +1,4 @@
-# Retailing – a RFM analysis using Python
+# RFM analysis a retailing company - SuperStore using Python
 
 Please check the code below or access via the link:  
 🔗 https://colab.research.google.com/drive/1cWVm4ttAOOfBJzVmswV8OovZ3s1xOa8H?usp=sharing 🔗    
@@ -21,7 +21,7 @@ Tools Used: Python
 ### Objective:
 ### 📖 This project is about using Python to analyze given dataset.
 
-✔️ SuperStore is a global retail company. To celebrate Christmas and New Year, Marketing team wants to deploy marketing campaigns in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
+✔️ SuperStore is a global retail company. **To celebrate Christmas and New Year**, Marketing team wants to deploy **marketing campaigns** in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
 ✔️ Marketing director suggests using RFM model in Python to classify customers, then launch marketing campaigns to appreciate loyalty customers, as well as engaging potential customers.  
 ✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used to quantitatively rank and group customers based on the recency, frequency and monetary total of their recent transactions to identify the best customers and perform targeted marketing campaigns.  
 
