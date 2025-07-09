@@ -89,29 +89,26 @@ Sheet 'Segmentation'
 *Note: Click the white triangle to see codes*  
 
 ### 1️⃣ EDA
-
-#### Import libraries and dataset, copy dataset:
-
 <details>
- <summary>Code:</summary>
+ <summary>Import libraries and dataset, copy dataset:</summary>
   
- ```
- # import libraries
- import pandas as pd
- import numpy as np
- from google.colab import drive
- import matplotlib.pyplot as plt
- import seaborn as sns
- 
- # import excel files with sheet name 'ecommerce retail'
- drive.mount('/content/drive')
- 
- path = '/content/drive/MyDrive/DAC K34/Python/Project_3/ecommerce retail.xlsx'
- ecommerce_retail = pd.read_excel (path, sheet_name ='ecommerce retail')
- 
- #copy dataframe
- df = ecommerce_retail.copy()
- ```
+  ```python
+  # import libraries
+  import pandas as pd
+  import numpy as np
+  from google.colab import drive
+  import matplotlib.pyplot as plt
+  import seaborn as sns
+  
+  # import excel files with sheet name 'ecommerce retail'
+  drive.mount('/content/drive')
+  
+  path = '/content/drive/MyDrive/DAC K34/Python/Project_3/ecommerce retail.xlsx'
+  ecommerce_retail = pd.read_excel (path, sheet_name ='ecommerce retail')
+  
+  #copy dataframe
+  df = ecommerce_retail.copy()
+  ```
 </details>  
 
 #### Understanding data    
@@ -119,7 +116,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Basic data exploration:</summary>
 
- ```
+ ```python
  df.head()
  
  # show rows and columns count
@@ -161,17 +158,28 @@ Sheet 'Segmentation'
  print(f'Number of entirely duplicated rows: {df.duplicated().sum()}')
  ## show all duplicated rows
  df[df.duplicated()]
-```
-
- </details>
+ ```
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_1.png)  
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_2.png)
 
+</details>
+
+➡️ This dataset has 8 columns and 541,909 records. Most columns have right data type:  
+- InvoiceNo (object) -> no need to change data type.  
+- StockCode (object) -> no need to change data type.  
+- Description (object) -> no need to change data type.  
+- Quantity (int64) -> no need to change data type.  
+- InvoiceDate (datetime) -> no need to change data type.  
+- UnitPrice (float64) -> no need to change data type.  
+- CustomerID (float64) -> can be changed to int64 if needed.
+- Country (object) -> no need to change data type.  
+➡️ 
+
 <details>
  <summary>Change data typpe of 'InvoiceNo' to string:</summary>
 
- ```
+ ```python
  # change data type of Invoice No to string
  df['InvoiceNo'] = df['InvoiceNo'].astype(str)
  ```
@@ -181,7 +189,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Explore negative values of Quantity columns (Quantity < 0):</summary>
   
- ```
+ ```python
  # print out some rows where Quantity < 0
  print('Some rows have Quantity < 0')
  print(df[df['Quantity']<0].head())
@@ -206,7 +214,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Explore negative values of Quantity columns (UnitPrice < 0):</summary>
   
- ```
+ ```python
  # print out some rows where Quantity < 0
  print('Some rows have UnitPrice < 0')
  print(df[df['UnitPrice'] < 0].head())
@@ -219,7 +227,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Seperate 'InvoiceData' to 'Day' and 'Month' columns:</summary>
   
- ```
+ ```python
  # seperate InvoiceDate to Day and Month columns
  df['Day'] = pd.to_datetime(df.InvoiceDate).dt.date
  df['Month'] = df['Day'].apply(lambda x: str(x)[:-3])
@@ -237,7 +245,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Negative values:</summary>
   
- ```
+ ```python
  # change data type
  df['StockCode'] = df['StockCode'].astype(str)
  df['Description'] = df['Description'].astype(str)
@@ -267,7 +275,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Missing values:</summary>
   
- ```
+ ```python
  # show up some rows with missing values
  print('---Some rows with missing values---')
  df_null = df.isnull()
@@ -277,7 +285,7 @@ Sheet 'Segmentation'
  ```
  ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_7.png)
  
- ```
+ ```python
  # drop rows with CustomerID == None
  df_no_na = df.drop(df[df['CustomerID'].isnull()].index)
  df_no_na
@@ -291,7 +299,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Duplicated values:</summary>
   
- ```
+ ```python
  # locate the values are not duplicated in the selected columns
  df_no_dup = df_no_na.loc[~df.duplicated(subset = ['InvoiceNo','StockCode','InvoiceDate','UnitPrice','CustomerID','Country'])].reset_index(drop=True).copy()
  
@@ -303,7 +311,7 @@ Sheet 'Segmentation'
  
  ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_9.png)
  
- ```
+ ```python
  # drop duplicates, keep the first row of subset
  df_main = df.drop_duplicates(subset=["InvoiceNo", "StockCode","InvoiceDate","CustomerID"], keep = 'first')
  
@@ -317,7 +325,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Create 'Sales' column (Quantity * Price):</summary>
   
- ```
+ ```python
  # create Sales column (Quantity * UnitPrice)
  df_main['Sales'] = df_main.Quantity * df.UnitPrice
  
@@ -341,7 +349,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Code:</summary>  
 
- ```
+ ```python
  # import excel files with sheet name 'Segmentation'
  segmentation = pd.read_excel (path, sheet_name ='Segmentation')
  
@@ -366,7 +374,7 @@ Sheet 'Segmentation'
 <details>
  <summary>Code:</summary>
  
- ```
+ ```python
  # determining Recency, Frequency, Monetary
  df_RFM = df_main.groupby('CustomerID').agg(
      Recency = ('Day', lambda x: last_day - x.max()),
@@ -390,7 +398,7 @@ Sheet 'Segmentation'
  ```
  ![data_processing_2](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_2.png)
 
- ```
+ ```python
  # clear space
  df_seg['RFM Score'] = df_seg['RFM Score'].str.strip()
  
@@ -416,7 +424,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 <details>
  <summary>Loyal status:</summary>
 
- ```
+ ```python
  df_RFM_final['Loyal_Status'] = df_RFM_final['Segment'].apply(lambda x: 'Loyal' if x in ('Loyal','Potential Loyalist') else 'Non Loyal')
 
  df_RFM_final.head()
@@ -428,7 +436,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 <details>
  <summary>Creating df_RFM_final for visualization:</summary>
  
- ```
+ ```python
  # Average of Quantity and Sales according to CustomerID
  df_potential_average = df_main.groupby('CustomerID').agg(
      Quantity_Average = ('Quantity','mean'),
@@ -440,7 +448,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 
 ![data_processing_5](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_5.png)
 
- ```
+ ```python
  # First Sales and Quantity according to CustomerID
  ## base on InvoiceDate to get first order -> Quantity, Sales
  df_main['Ranking'] = df_main.groupby('CustomerID')['InvoiceDate'].rank(method = 'first')
@@ -452,7 +460,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
  
  ![data_processing_6](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_6.png)
 
- ```
+ ```python
  # merge all
  df_RFM_final = df_RFM_final.merge(df_potential_average, how = 'left', on = 'CustomerID')
  df_RFM_final = df_RFM_final.merge(df_potential_first, how = 'left', on = 'CustomerID')
@@ -474,7 +482,7 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 <details>
  <summary>Visualize final dataset with RFM:</summary>
 
- ```
+ ```python
  # Visualize spending amount and number of user according to Segment.
  user_by_segment = df_RFM_final[['Segment','CustomerID']].groupby(['Segment']).count().reset_index()
  user_by_segment = user_by_segment.rename(columns = {'CustomerID':'user_volume'})
