@@ -166,18 +166,23 @@ Sheet 'Segmentation'
 </details>
 
 ➡️ This dataset has 8 columns and 541,909 records. Most columns have right data type:  
-- InvoiceNo (object) -> no need to change data type.  
+- InvoiceNo (object) -> change to string data type for further handling.  
 - StockCode (object) -> no need to change data type.  
 - Description (object) -> no need to change data type.  
 - Quantity (int64) -> no need to change data type.  
 - InvoiceDate (datetime) -> no need to change data type.  
 - UnitPrice (float64) -> no need to change data type.  
 - CustomerID (float64) -> can be changed to int64 if needed.
-- Country (object) -> no need to change data type.  
-➡️ 
+- Country (object) -> no need to change data type.
+  
+➡️ The percentage of duplicated values is acceptable.  
+
+➡️ Missing values in "CustomerID" are high (~25%), it will affect the analysis. They need to verify and fill up as much as possible.  
+
+➡️ 5268 rows of duplicating contain duplicated information of "Quantity", "InvoiceDate", "CustomerID", "Country". These rows are acceptable because there will be a customer buying many products in a day from any country.  
 
 <details>
- <summary>Change data typpe of 'InvoiceNo' to string:</summary>
+ <summary>Change data type of 'InvoiceNo' to string:</summary>
 
  ```python
  # change data type of Invoice No to string
@@ -186,8 +191,10 @@ Sheet 'Segmentation'
 
 </details>
 
+➡️ The purpose for this action: Easy for handling duplicated values.
+
 <details>
- <summary>Explore negative values of Quantity columns (Quantity < 0):</summary>
+ <summary>Explore negative values of Quantity columns (Quantity < 0 and UnitPrice < 0):</summary>
   
  ```python
  # print out some rows where Quantity < 0
@@ -206,26 +213,23 @@ Sheet 'Segmentation'
  ## check InvoiceNo has no 'C' and Quantity < 0
  print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
  ```
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_3.png)
 
+
+  ```python
+  # print out some rows where Quantity < 0
+  print('Some rows have UnitPrice < 0')
+  print(df[df['UnitPrice'] < 0].head())
+  ```
+
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_4.png)
+ 
 </details>
 
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_3.png)
+➡️ 
 
 <details>
- <summary>Explore negative values of Quantity columns (UnitPrice < 0):</summary>
-  
- ```python
- # print out some rows where Quantity < 0
- print('Some rows have UnitPrice < 0')
- print(df[df['UnitPrice'] < 0].head())
- ```
-
-</details>
-
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_4.png)
-
-<details>
- <summary>Seperate 'InvoiceData' to 'Day' and 'Month' columns:</summary>
+ <summary>Seperate "InvoiceDate" to "Day" and "Month" columns:</summary>
   
  ```python
  # seperate InvoiceDate to Day and Month columns
