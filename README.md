@@ -213,20 +213,25 @@ Sheet 'Segmentation'
  ## check InvoiceNo has no 'C' and Quantity < 0
  print(df[(df['Cancellation'] == False) & (df['Quantity'] < 0)].head())
  ```
+
  ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_3.png)
 
+ ```python
+ # print out some rows where Quantity < 0
+ print('Some rows have UnitPrice < 0')
+ print(df[df['UnitPrice'] < 0].head())
+ ```
 
-  ```python
-  # print out some rows where Quantity < 0
-  print('Some rows have UnitPrice < 0')
-  print(df[df['UnitPrice'] < 0].head())
-  ```
-
- ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_4.png)
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_4.png)
  
 </details>
 
-➡️ 
+➡️ There are two reasons behind Quantity < 0:
+- Orders with InvoiceNo has C are cancelled orders.
+- Rows with UnitPrice = 0 are returned orders.
+
+➡️ Orders with UnitPrice < 0 are in "Adjust bad dept" state as noted in "Description" column.  
+➡️ We can drop these rows to segment customers precisely.  
 
 <details>
  <summary>Seperate "InvoiceDate" to "Day" and "Month" columns:</summary>
@@ -238,9 +243,9 @@ Sheet 'Segmentation'
  df.head()
  ```
 
-</details>
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_5.png)
 
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_5.png)
+</details>
 
 ➡️ The 'InvoiceDate' column is split into 'Day' and 'Month' to later identify the customer's most recent interaction date, which is essential for calculating the Recency metric.  
 
@@ -268,11 +273,11 @@ Sheet 'Segmentation'
  df = df.replace('Nan', None)
  
  df.info()
-```
+ ```
+
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_6.png)
 
 </details>
-
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_6.png)
 
 ➡️ Remove all negative values in 'Quantity', 'UnitPrice' and 'InvoiceNo' with 'C' because they are cancelled orders.  
 
@@ -294,9 +299,10 @@ Sheet 'Segmentation'
  df_no_na = df.drop(df[df['CustomerID'].isnull()].index)
  df_no_na
  ```
-</details>
 
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_8.png)
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_8.png)
+
+</details>
 
 ➡️ Drop all rows with 'CustomerID' is null. The reason for this action is cannot identify the customers.  
 
@@ -322,9 +328,11 @@ Sheet 'Segmentation'
  df_main.head()
  ```
 
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_10.png)
+
 </details>
 
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_10.png)
+➡️ In this step, we drop all duplicated rows with same information from all columns "InvoiceNo", "StockCode", "InvoiceDate", "UnitPrice", "CustomerID", "Country". Then with the remaining result, keeping only the first rows for R-F-M calculation.  
 
 <details>
  <summary>Create 'Sales' column (Quantity * Price):</summary>
@@ -340,18 +348,16 @@ Sheet 'Segmentation'
  df_main
  ```
 
-</details>
+ ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_11.png)
 
-![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_eda_11.png)
+</details>
 
 ➡️ Taking max of 'Day' in order to identify the most recent date of interaction of customers.  
 
-### 2️⃣ Data processing  
-
-#### Handle Segmentation table  
+### 2️⃣ Data processing   
 
 <details>
- <summary>Code:</summary>  
+ <summary>Handle Segmentation table </summary>  
 
  ```python
  # import excel files with sheet name 'Segmentation'
@@ -367,16 +373,13 @@ Sheet 'Segmentation'
  df_seg.head()
  ```
 
+ ![data_processing_1](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_1.png)  
+
 </details>
 
-![data_processing_1](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_1.png)  
-
 ➡️ The Segmentation copy process involves duplicating a new Segmentation table to avoid interference with the original dataset, thereby preventing unintended data modifications. The transformation of the Segmentation table will split segments based on predefined RFM scores. These scores are currently separated by commas, so this process will parse them into the required segments accordingly.  
-
-#### Calculating RFM
-
 <details>
- <summary>Code:</summary>
+ <summary>Calculating RFM</summary>
  
  ```python
  # determining Recency, Frequency, Monetary
@@ -412,9 +415,9 @@ Sheet 'Segmentation'
  df_RFM_final.head()
  ```
 
-</details>
+ ![data_processing_3](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_3.png)
 
-![data_processing_3](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_3.png)
+</details>
 
 ➡️ In this stage, RFM is calculated:  
 - Recency is computed as the last purchase date minus the dataset’s maximum date, which returns a negative value representing the number of days since the most recent transaction.  
@@ -423,19 +426,18 @@ Sheet 'Segmentation'
 Afterward, the results of the three metrics are assigned scores on a scale from 1 to 5.
 In the final step, the combined RFM scores are matched against the Segmentation table to assign each customer to a corresponding segment.  
 
-#### Determine Loyal and Non Loyal and showing characteristic of Potential Loyalist  
-
 <details>
- <summary>Loyal status:</summary>
+ <summary>Determine Loyal and Non Loyal and showing characteristic of Potential Loyalist:</summary>
 
  ```python
  df_RFM_final['Loyal_Status'] = df_RFM_final['Segment'].apply(lambda x: 'Loyal' if x in ('Loyal','Potential Loyalist') else 'Non Loyal')
 
  df_RFM_final.head()
  ```
-</details>
 
-![data_processing_4](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_4.png)
+ ![data_processing_4](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_data_processing_4.png)
+
+➡️ Determining "Loyal" and "Non Loyal" state based on Segmentation table.
 
 <details>
  <summary>Creating df_RFM_final for visualization:</summary>
@@ -480,6 +482,8 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 | 2 | 12348.0 | 75 | 27 | 1595.64 | 2010-12-16 | -75 | 2 | 2 | 4 | 224 | At Risk | 224 | Non Loyal | 68.925926 | 59.097778 | 72 | 39.6 |
 | 3 | 12349.0 | 18 | 73 | 1757.55 | 2011-11-21 | -18 | 4 | 4 | 4 | 444 | Loyal | 444 | Loyal | 8.643836 | 24.076027 | 2 | 15.0 |
 | 4 | 12350.0 | 310 | 17 | 334.40 | 2011-02-02 | -310 | 1 | 2 | 2 | 122 | Hibernating customers | 122 | Non Loyal | 11.588235 | 19.670588 | 12 | 25.2 |
+
+➡️ 
 
 ### 3️⃣ Visualization  
 
