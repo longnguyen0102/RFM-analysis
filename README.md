@@ -1,4 +1,4 @@
-# RFM analysis a retailing company - SuperStore using Python
+# RFM analysis customers' engagement a retailing company - SuperStore using Python
 
 Please check the code below or access via the link:  
 🔗 https://colab.research.google.com/drive/1cWVm4ttAOOfBJzVmswV8OovZ3s1xOa8H?usp=sharing 🔗    
@@ -22,7 +22,7 @@ Tools Used: Python
 ### 📖 This project is about using Python to analyze given dataset.
 
 ✔️ SuperStore is a global retail company. **To celebrate Christmas and New Year**, Marketing team wants to deploy **marketing campaigns** in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
-✔️ Marketing director suggests using RFM model in Python to classify customers, then launch marketing campaigns to appreciate loyalty customers, as well as engaging potential customers.  
+✔️ Marketing director suggests using **RFM model** in Python to classify customers, then launch marketing campaigns to **appreciate loyalty customers**, as well as **engaging potential customers**.  
 ✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used to quantitatively rank and group customers based on the recency, frequency and monetary total of their recent transactions to identify the best customers and perform targeted marketing campaigns.  
 
 ### 👤 Who is this project for?  
@@ -167,19 +167,9 @@ Sheet 'Segmentation'
 
 ➡️ This dataset has 8 columns and 541,909 records. Most columns have right data type:  
 - InvoiceNo (object) -> change to string data type for further handling.  
-- StockCode (object) -> no need to change data type.  
-- Description (object) -> no need to change data type.  
-- Quantity (int64) -> no need to change data type.  
-- InvoiceDate (datetime) -> no need to change data type.  
-- UnitPrice (float64) -> no need to change data type.  
-- CustomerID (float64) -> can be changed to int64 if needed.
-- Country (object) -> no need to change data type.
+- CustomerID (float64) -> can be changed to int64 if needed.  
   
-➡️ The percentage of duplicated values is acceptable.  
-
-➡️ Missing values in "CustomerID" are high (~25%), it will affect the analysis. They need to verify and fill up as much as possible.  
-
-➡️ 5268 rows of duplicating contain duplicated information of "Quantity", "InvoiceDate", "CustomerID", "Country". These rows are acceptable because there will be a customer buying many products in a day from any country.  
+➡️ The percentage of duplicated values is acceptable. Missing values in "CustomerID" are high (~25%), it will affect the analysis. They need to verify and fill up as much as possible. 5268 rows of duplicating contain duplicated information of "Quantity", "InvoiceDate", "CustomerID", "Country". These rows are acceptable because there will be a customer buying many products in a day from any country.  
 
 <details>
  <summary>Change data type of 'InvoiceNo' to string:</summary>
