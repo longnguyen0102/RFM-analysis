@@ -1,4 +1,4 @@
-# RFM analysis customers' engagement a retailing company - SuperStore using Python
+# RFM analysis customers' engagement a retailing company - SuperStore | Python
 
 Please check the code below or access via the link:  
 🔗 https://colab.research.google.com/drive/1cWVm4ttAOOfBJzVmswV8OovZ3s1xOa8H?usp=sharing 🔗    
@@ -23,7 +23,8 @@ Tools Used: Python
 
 ✔️ SuperStore is a global retail company. **To celebrate Christmas and New Year**, Marketing team wants to deploy **marketing campaigns** in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
 ✔️ Marketing director suggests using **RFM model** in Python to classify customers, then launch marketing campaigns to **appreciate loyalty customers**, as well as **engaging potential customers**.  
-✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used to quantitatively rank and group customers based on the recency, frequency and monetary total of their recent transactions to identify the best customers and perform targeted marketing campaigns.  
+✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used the **quintile rank** (ranking from 1 to 5 for each group) and group customers based on the recency, frequency and monetary total of their **recent transactions** to identify the best customers and perform targeted marketing campaigns.  
+✔️ Based on the 
 
 ### 👤 Who is this project for?  
 
@@ -90,7 +91,7 @@ Sheet 'Segmentation'
 
 ### 1️⃣ EDA
 <details>
- <summary>Import libraries and dataset, copy dataset:</summary>
+ <summary><strong>Import libraries and dataset, copy dataset:</strong></summary>
   
   ```python
   # import libraries
@@ -114,7 +115,7 @@ Sheet 'Segmentation'
 #### Understanding data    
 
 <details>
- <summary>Basic data exploration:</summary>
+ <summary><strong>Basic data exploration:</strong></summary>
 
  ```python
  df.head()
@@ -172,7 +173,7 @@ Sheet 'Segmentation'
 ➡️ The percentage of duplicated values is acceptable. Missing values in "CustomerID" are high (~25%), it will affect the analysis. They need to verify and fill up as much as possible. 5268 rows of duplicating contain duplicated information of "Quantity", "InvoiceDate", "CustomerID", "Country". These rows are acceptable because there will be a customer buying many products in a day from any country.  
 
 <details>
- <summary>Change data type of 'InvoiceNo' to string:</summary>
+ <summary><strong>Change data type of 'InvoiceNo' to string:</strong></summary>
 
  ```python
  # change data type of Invoice No to string
@@ -184,7 +185,7 @@ Sheet 'Segmentation'
 ➡️ The purpose for this action: Easy for handling duplicated values.
 
 <details>
- <summary>Explore negative values of Quantity columns (Quantity < 0 and UnitPrice < 0):</summary>
+ <summary><strong>Explore negative values of Quantity columns (Quantity < 0 and UnitPrice < 0):</strong></summary>
   
  ```python
  # print out some rows where Quantity < 0
@@ -224,7 +225,7 @@ Sheet 'Segmentation'
 ➡️ We can drop these rows to segment customers precisely.  
 
 <details>
- <summary>Seperate "InvoiceDate" to "Day" and "Month" columns:</summary>
+ <summary><strong>Seperate "InvoiceDate" to "Day" and "Month" columns:</strong></summary>
   
  ```python
  # seperate InvoiceDate to Day and Month columns
@@ -242,7 +243,7 @@ Sheet 'Segmentation'
 #### Handle negative, missing values, duplicates:  
 
 <details>
- <summary>Negative values:</summary>
+ <summary><strong>Negative values:</strong></summary>
   
  ```python
  # change data type
@@ -272,7 +273,7 @@ Sheet 'Segmentation'
 ➡️ Remove all negative values in 'Quantity', 'UnitPrice' and 'InvoiceNo' with 'C' because they are cancelled orders.  
 
 <details>
- <summary>Missing values:</summary>
+ <summary><strong>Missing values:</strong></summary>
   
  ```python
  # show up some rows with missing values
@@ -297,7 +298,7 @@ Sheet 'Segmentation'
 ➡️ Drop all rows with 'CustomerID' is null. The reason for this action is cannot identify the customers.  
 
 <details>
- <summary>Duplicated values:</summary>
+ <summary><strong>Duplicated values:</strong></summary>
   
  ```python
  # locate the values are not duplicated in the selected columns
@@ -325,7 +326,7 @@ Sheet 'Segmentation'
 ➡️ In this step, we drop all duplicated rows with same information from all columns "InvoiceNo", "StockCode", "InvoiceDate", "UnitPrice", "CustomerID", "Country". Then with the remaining result, keeping only the first rows for R-F-M calculation.  
 
 <details>
- <summary>Create 'Sales' column (Quantity * Price):</summary>
+ <summary><strong>Create 'Sales' column (Quantity * Price):</strong></summary>
   
  ```python
  # create Sales column (Quantity * UnitPrice)
@@ -347,7 +348,7 @@ Sheet 'Segmentation'
 ### 2️⃣ Data processing   
 
 <details>
- <summary>Handle Segmentation table </summary>  
+ <summary><strong>Handle Segmentation table</strong></summary>  
 
  ```python
  # import excel files with sheet name 'Segmentation'
@@ -369,7 +370,7 @@ Sheet 'Segmentation'
 
 ➡️ The Segmentation copy process involves duplicating a new Segmentation table to avoid interference with the original dataset, thereby preventing unintended data modifications. The transformation of the Segmentation table will split segments based on predefined RFM scores. These scores are currently separated by commas, so this process will parse them into the required segments accordingly.  
 <details>
- <summary>Calculating RFM</summary>
+ <summary><strong>Calculating RFM</strong></summary>
  
  ```python
  # determining Recency, Frequency, Monetary
@@ -417,7 +418,7 @@ Afterward, the results of the three metrics are assigned scores on a scale from 
 In the final step, the combined RFM scores are matched against the Segmentation table to assign each customer to a corresponding segment.  
 
 <details>
- <summary>Determine Loyal and Non Loyal and showing characteristic of Potential Loyalist:</summary>
+ <summary><strong>Determine Loyal and Non Loyal and showing characteristic of Potential Loyalist:</strong></summary>
 
  ```python
  df_RFM_final['Loyal_Status'] = df_RFM_final['Segment'].apply(lambda x: 'Loyal' if x in ('Loyal','Potential Loyalist') else 'Non Loyal')
@@ -429,8 +430,10 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 
 ➡️ Determining "Loyal" and "Non Loyal" state based on Segmentation table.
 
+</details>
+
 <details>
- <summary>Creating df_RFM_final for visualization:</summary>
+ <summary><strong>Creating df_RFM_final for visualization:</strong></summary>
  
  ```python
  # Average of Quantity and Sales according to CustomerID
@@ -473,14 +476,10 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 | 3 | 12349.0 | 18 | 73 | 1757.55 | 2011-11-21 | -18 | 4 | 4 | 4 | 444 | Loyal | 444 | Loyal | 8.643836 | 24.076027 | 2 | 15.0 |
 | 4 | 12350.0 | 310 | 17 | 334.40 | 2011-02-02 | -310 | 1 | 2 | 2 | 122 | Hibernating customers | 122 | Non Loyal | 11.588235 | 19.670588 | 12 | 25.2 |
 
-</details>
-
-➡️ 
-
 ### 3️⃣ Visualization  
 
 <details>
- <summary>Visualize final dataset with RFM:</summary>
+ <summary><strong>Visualize final dataset with RFM:</strong></summary>
 
  ```python
  # Visualize spending amount and number of user according to Segment.
