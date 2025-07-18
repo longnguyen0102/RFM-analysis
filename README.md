@@ -23,8 +23,9 @@ Tools Used: Python
 
 ✔️ SuperStore is a global retail company. **To celebrate Christmas and New Year**, Marketing team wants to deploy **marketing campaigns** in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
 ✔️ Marketing director suggests using **RFM model** in Python to classify customers, then launch marketing campaigns to **appreciate loyalty customers**, as well as **engaging potential customers**.  
-✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used the **quintile rank** (ranking from 1 to 5 for each group) and group customers based on the recency, frequency and monetary total of their **recent transactions** to identify the best customers and perform targeted marketing campaigns.  
-✔️ Based on the 
+✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used the **quintile rank** and group customers based on the recency, frequency and monetary total of their **recent transactions** to identify the best customers and perform targeted marketing campaigns.  
+✔️ Choosing from 1 to 5 because it is the most common ranking and easy to express (1 = the least, 5 = the most).  
+✔️ Based on the "Segmentation" table, customers are classified according to their individual RFM scores. For example, customers in the **Champions** segment typically have scores such as 555, 554, etc., indicating high recency, frequency, and monetary values. On the other hand, **Hibernating customers** segment may have scores like 332, 322, etc., reflecting lower engagement across one or more dimensions.  
 
 ### 👤 Who is this project for?  
 
@@ -505,9 +506,40 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_visualization.png)
 
-## 📌 Key Takeaways:  
+<details>
+ <summary><strong>Visualize for R, F, M scores:</strong></summary>
+
+ ```python
+ # Histograms for R, F, and M scores
+ fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+ 
+ sns.histplot(data=df_RFM_final, x='R', ax=axes[0], kde=True)
+ axes[0].set_title('Distribution of Recency (R) Scores')
+ axes[0].set_xlabel('Recency Score')
+ axes[0].set_ylabel('Number of Customers')
+ 
+ sns.histplot(data=df_RFM_final, x='F', ax=axes[1], kde=True)
+ axes[1].set_title('Distribution of Frequency (F) Scores')
+ axes[1].set_xlabel('Frequency Score')
+ axes[1].set_ylabel('Number of Customers')
+ 
+ sns.histplot(data=df_RFM_final, x='M', ax=axes[2], kde=True)
+ axes[2].set_title('Distribution of Monetary (M) Scores')
+ axes[2].set_xlabel('Monetary Score')
+ axes[2].set_ylabel('Number of Customers')
+ 
+ plt.tight_layout()
+ plt.show()
+ ```
+</details>
+
+### 4️⃣ Insights and Actions
+
 ✔️ As showing in the plot, **Champions** customers spend the most and they contribute almost 20%. However, we should mind about **At Risk** customers and **Hibernating** customers as they have 10-20%  
 ➡️ Action: We should deploy some program to encourage them and notify them about new programs.  
 
 ✔️ **Potential Loyalist** customers and **Loyal** customers have user contribution at the same but the money spending of **Potential Loyalist** is low (less than 10%). **Promising** customers are low on user contribution and the money spending is the same as **Potential**  
 ➡️ Action: Deploy encouraging programs.
+
+## 📌 Key Takeaways:  
+
