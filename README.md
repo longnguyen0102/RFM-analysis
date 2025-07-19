@@ -24,7 +24,7 @@ Tools Used: Python
 ✔️ SuperStore is a global retail company. **To celebrate Christmas and New Year**, Marketing team wants to deploy **marketing campaigns** in order to show appreciation to loyalty customers. Beside that, they want to engage with potential customers who could become loyal clients.  
 ✔️ Marketing director suggests using **RFM model** in Python to classify customers, then launch marketing campaigns to **appreciate loyalty customers**, as well as **engaging potential customers**.  
 ✔️ RFM analysis (Recency - Frequency - Monetary) is a marketing technique used the **quintile rank** and group customers based on the recency, frequency and monetary total of their **recent transactions** to identify the best customers and perform targeted marketing campaigns.  
-✔️ Choosing from 1 to 5 because it is the most common ranking and easy to express (1 = the least, 5 = the most).  
+✔️ Choosing from 1 to 5 because it is the most common ranking and easy to express (1 = the worst, 5 = the best).  
 ✔️ Based on the "Segmentation" table, customers are classified according to their individual RFM scores. For example, customers in the **Champions** segment typically have scores such as 555, 554, etc., indicating high recency, frequency, and monetary values. On the other hand, **Hibernating customers** segment may have scores like 332, 322, etc., reflecting lower engagement across one or more dimensions.  
 
 ### 👤 Who is this project for?  
@@ -412,9 +412,9 @@ Sheet 'Segmentation'
 </details>
 
 **In this stage, RFM is calculated:**  
-- 1. Recency is computed as the last purchase date minus the dataset’s maximum date, which returns a negative value representing the number of days since the most recent transaction.  
-- 2. Frequency measures how often a customer makes a purchase and is computed as counting the number of appearance of each customer.  
-- 2. Monetary represents the total of money spending from each customer.
+  1. Recency is computed as the last purchase date minus the dataset’s maximum date, the low value the better. However, the convenience in label, we use negative value of Recency. That means **the bigger the better**, and ranking is from 1 = worst to 5 = best.  
+  2. Frequency measures how often a customer makes a purchase and is computed as counting the number of appearance of each customer, **the bigger the better**.  
+  3. Monetary represents the total of money spending from each customer, **the bigger the better**.  
 Afterward, the results of the three metrics are assigned scores on a scale from 1 to 5.
 In the final step, the combined RFM scores are matched against the Segmentation table to assign each customer to a corresponding segment.  
 
