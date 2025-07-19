@@ -411,10 +411,10 @@ Sheet 'Segmentation'
 
 </details>
 
-➡️ In this stage, RFM is calculated:  
-- Recency is computed as the last purchase date minus the dataset’s maximum date, which returns a negative value representing the number of days since the most recent transaction.  
-- Frequency measures how often a customer makes a purchase and is computed as counting the number of appearance of each customer.  
-- Monetary represents the total of money spending from each customer.
+**In this stage, RFM is calculated:**  
+- 1. Recency is computed as the last purchase date minus the dataset’s maximum date, which returns a negative value representing the number of days since the most recent transaction.  
+- 2. Frequency measures how often a customer makes a purchase and is computed as counting the number of appearance of each customer.  
+- 2. Monetary represents the total of money spending from each customer.
 Afterward, the results of the three metrics are assigned scores on a scale from 1 to 5.
 In the final step, the combined RFM scores are matched against the Segmentation table to assign each customer to a corresponding segment.  
 
@@ -480,6 +480,50 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 ### 3️⃣ Visualization  
 
 <details>
+ <summary><strong>Histogram for R, F, M scores:</strong></summary>
+
+ ```python
+ # Histograms for R, F, and M scores
+ fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+ 
+ # Convert R, F, and M columns to integer type for correct ordering
+ df_RFM_final['R_int'] = df_RFM_final['R'].astype(int)
+ df_RFM_final['F_int'] = df_RFM_final['F'].astype(int)
+ df_RFM_final['M_int'] = df_RFM_final['M'].astype(int)
+ 
+ 
+ sns.histplot(data=df_RFM_final, x='R_int', ax=axes[0], kde=True, discrete=True)
+ axes[0].set_title('Distribution of Recency (R) Scores')
+ axes[0].set_xlabel('Recency Score')
+ axes[0].set_ylabel('Number of Customers')
+ axes[0].set_xticks(range(1, 6)) # Set explicit tick locations
+ 
+ sns.histplot(data=df_RFM_final, x='F_int', ax=axes[1], kde=True, discrete=True)
+ axes[1].set_title('Distribution of Frequency (F) Scores')
+ axes[1].set_xlabel('Frequency Score')
+ axes[1].set_ylabel('Number of Customers')
+ axes[1].set_xticks(range(1, 6)) # Set explicit tick locations
+ 
+ sns.histplot(data=df_RFM_final, x='M_int', ax=axes[2], kde=True, discrete=True)
+ axes[2].set_title('Distribution of Monetary (M) Scores')
+ axes[2].set_xlabel('Monetary Score')
+ axes[2].set_ylabel('Number of Customers')
+ axes[2].set_xticks(range(1, 6)) # Set explicit tick locations
+ 
+ 
+ plt.tight_layout()
+ plt.show()
+ ```
+</details>
+
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_visualization_R_F_M.png)
+
+➡️ As can be seen from the histogram:  
+- **Recency (R):** The chart shows that most customers have high Recency scores (4 and 5), concentrated on the right side of the distribution. This indicates that a majority of customers have made recent purchases. However, there is still a significant portion of customers with low Recency scores (1, 2, or 3), suggesting they haven't purchased in a while.
+- **Frequency (F):** The frequency distribution is left-skewed, with most customers having low Frequency scores (1 and 2). This indicates that the majority of customers do not purchase frequently. A small segment of customers with high Frequency scores (4 and 5) represents those who buy very regularly.
+- **Monetary (M):** The Monetary distribution is also left-skewed, similar to Frequency. This suggests that most customers have low spending values. Only a small number of customers have high Monetary scores (4 and 5), representing high-value spenders.  
+
+<details>
  <summary><strong>Visualize final dataset with RFM:</strong></summary>
 
  ```python
@@ -507,39 +551,49 @@ In the final step, the combined RFM scores are matched against the Segmentation 
 ![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_visualization.png)
 
 <details>
- <summary><strong>Visualize for R, F, M scores:</strong></summary>
+ <summary><strong>Visualize for sales trending:</strong></summary>
 
  ```python
- # Histograms for R, F, and M scores
- fig, axes = plt.subplots(1, 3, figsize=(18, 6))
+ monthly_sales = df_main.groupby('Month')['Sales'].sum().reset_index()
  
- sns.histplot(data=df_RFM_final, x='R', ax=axes[0], kde=True)
- axes[0].set_title('Distribution of Recency (R) Scores')
- axes[0].set_xlabel('Recency Score')
- axes[0].set_ylabel('Number of Customers')
+ # Convert Month to datetime for proper sorting
+ monthly_sales['Month'] = pd.to_datetime(monthly_sales['Month'])
  
- sns.histplot(data=df_RFM_final, x='F', ax=axes[1], kde=True)
- axes[1].set_title('Distribution of Frequency (F) Scores')
- axes[1].set_xlabel('Frequency Score')
- axes[1].set_ylabel('Number of Customers')
+ # Sort by month
+ monthly_sales = monthly_sales.sort_values('Month')
  
- sns.histplot(data=df_RFM_final, x='M', ax=axes[2], kde=True)
- axes[2].set_title('Distribution of Monetary (M) Scores')
- axes[2].set_xlabel('Monetary Score')
- axes[2].set_ylabel('Number of Customers')
- 
+ # Visualize the sales trend over time
+ plt.figure(figsize=(12, 6))
+ sns.lineplot(data=monthly_sales, x='Month', y='Sales')
+ plt.xlabel('Month')
+ plt.ylabel('Total Sales')
+ plt.xticks(rotation=45)
  plt.tight_layout()
  plt.show()
  ```
 </details>
 
-### 4️⃣ Insights and Actions
+![](https://github.com/longnguyen0102/photo/blob/main/RFM_analysis-retail-python/RFM_analysis-retail-python_visualization_sales_trending.png)
 
-✔️ As showing in the plot, **Champions** customers spend the most and they contribute almost 20%. However, we should mind about **At Risk** customers and **Hibernating** customers as they have 10-20%  
-➡️ Action: We should deploy some program to encourage them and notify them about new programs.  
+### 4️⃣ Insights and Actions (drawing from both graphs of RFM and sales trending)  
 
-✔️ **Potential Loyalist** customers and **Loyal** customers have user contribution at the same but the money spending of **Potential Loyalist** is low (less than 10%). **Promising** customers are low on user contribution and the money spending is the same as **Potential**  
-➡️ Action: Deploy encouraging programs.
+✔️ The **"Champions"** segment is the core revenue driver: The chart shows that the **"Champions"** group contributes the largest share of revenue—over 60%—despite representing only around 18% of the total customer base. This highlights the critical importance of this segment to SuperStore. These are the most frequent, recent, and high-spending customers.  
+➡️ **Action:** It is essential to focus on maintaining and enhancing the experience for **"Champions"** to ensure stable and sustainable revenue.
+
+✔️ The **"Loyal"** segment also makes a significant contribution: The **"Loyal"** customers account for approximately 10% of the total customer base and contribute a notable portion of revenue—over 10%.  
+➡️ **Action:** This is a high-potential segment that can be nurtured to become future **"Champions"** Targeted initiatives such as personalized offers, loyalty programs, or incentives could encourage them to increase purchase frequency and order value.  
+
+✔️ The **"Potential Loyalist"** segment shows promise but needs activation: The **"Potential Loyalist"** group represents a relatively high share of the customer base (11%) but contributes only around 3.2% of total revenue. This aligns with the typical characteristics of this segment—good Recency and Frequency, but low Monetary value.  
+➡️ **Action:** Targeted campaigns should aim to increase spending per transaction for this group in order to convert them into **"Loyal"** or even **"Champions"** over time. Strategies could include personalized upselling, product bundling, or limited-time promotions to encourage higher basket sizes.
+
+✔️ Based on the *sales trending* graph:  
+➡️ Quarter fourth is a good time for **upselling**. This is the time that customers will spend more money for preparing for Holiday Season. Upselling programs are focus on increasing average order value instead of discount.  
+➡️ Months in early and middle of the year are the time for launching **customer incentive and relation programs**. During these time, the need for buying is low. That is the reason for these programs to step in, they will attract more customers (even new ones) and increase customers' Frequency, like: price discount, buy 1 get 1, voucher for the next buying,...  
+➡️ Months before sales increasing (such as September) is the time for **"heat up the market"**. Launching early promotion programs, new products, new collections are not the bad idea.  
 
 ## 📌 Key Takeaways:  
+✔️ Understand how **RFM analysis** can be used to evaluate customer behavior based on purchase frequency and spending value.  
 
+✔️ **Classify customers** into specific segments using RFM scores, helping identify which segments require enhanced experiences and which should be retained and nurtured to move toward higher-value tiers.  
+
+✔️ Determine the **optimal timing** for launching promotional campaigns and upselling strategies, enabling the business to both retain existing customers and attract new ones.
